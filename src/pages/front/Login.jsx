@@ -18,7 +18,7 @@ const Login = () => {
         handleSubmit,
         formState: { errors, isValid },
     } = useForm({
-        mode: 'onChange',
+        mode: 'onSubmit',
         defaultValues: {
             username: '',
             password: '',
@@ -91,7 +91,7 @@ const Login = () => {
                                         type="email"
                                         id="username"
                                         name="username"
-                                        className="form-control bg-white rounded-sm"
+                                        className={`form-control bg-white rounded-sm ${errors.username ? 'is-invalid' : ''}`}
                                         placeholder="請輸入 Email"
                                         {...register('username', emailValidation)}
                                         autoFocus
@@ -114,7 +114,7 @@ const Login = () => {
                                         type="password"
                                         id="password"
                                         name="password"
-                                        className="form-control bg-white rounded-sm"
+                                        className={`form-control bg-white rounded-sm ${errors.password ? 'is-invalid' : ''}`}
                                         placeholder="請輸入密碼"
                                         {...register('password', {
                                             required: '請輸入密碼',
