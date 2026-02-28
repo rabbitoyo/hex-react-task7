@@ -68,6 +68,7 @@ const Order = () => {
                                             <div className="col-md-6">
                                                 <label htmlFor="name" className="form-label">
                                                     姓名
+                                                    <span className="text-danger ms-1">*</span>
                                                 </label>
                                                 {errors.name && (
                                                     <span className="text-danger small ms-2">
@@ -80,7 +81,7 @@ const Order = () => {
                                                     name="name"
                                                     className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                                                     placeholder="請輸入您的姓名"
-                                                    defaultValue="Rabbit"
+                                                    defaultValue=""
                                                     {...register('name', {
                                                         required: '請輸入您的姓名',
                                                         minLength: {
@@ -93,6 +94,7 @@ const Order = () => {
                                             <div className="col-md-6">
                                                 <label htmlFor="email" className="form-label">
                                                     電子郵件
+                                                    <span className="text-danger ms-1">*</span>
                                                 </label>
                                                 {errors.email && (
                                                     <span className="text-danger small ms-2">
@@ -105,7 +107,7 @@ const Order = () => {
                                                     name="email"
                                                     className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                                                     placeholder="請輸入您的電子郵件"
-                                                    defaultValue="example@gmail.com"
+                                                    defaultValue=""
                                                     {...register('email', emailValidation)}
                                                 />
                                             </div>
@@ -114,6 +116,7 @@ const Order = () => {
                                     <div className="mb-3">
                                         <label htmlFor="tel" className="form-label">
                                             聯絡電話
+                                            <span className="text-danger ms-1">*</span>
                                         </label>
                                         {errors.tel && (
                                             <span className="text-danger small ms-2">
@@ -126,7 +129,7 @@ const Order = () => {
                                             name="tel"
                                             className={`form-control ${errors.tel ? 'is-invalid' : ''}`}
                                             placeholder="請輸入您的聯絡電話"
-                                            defaultValue="0912345678"
+                                            defaultValue=""
                                             {...register('tel', {
                                                 required: '請輸入您的聯絡電話',
                                                 minLength: { value: 8, message: '電話至少 8 碼' },
@@ -140,6 +143,7 @@ const Order = () => {
                                     <div className="mb-3">
                                         <label htmlFor="address" className="form-label">
                                             通訊地址
+                                            <span className="text-danger ms-1">*</span>
                                         </label>
                                         {errors.address && (
                                             <span className="text-danger small ms-2">
@@ -152,7 +156,7 @@ const Order = () => {
                                             name="address"
                                             className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                                             placeholder="請輸入您的通訊地址"
-                                            defaultValue="台北市信義區松仁路100號"
+                                            defaultValue=""
                                             {...register('address', {
                                                 required: '請輸入您的通訊地址',
                                             })}

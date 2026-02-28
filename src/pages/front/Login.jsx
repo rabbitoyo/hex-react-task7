@@ -81,6 +81,7 @@ const Login = () => {
                                         htmlFor="username"
                                     >
                                         電子郵件
+                                        <span className="text-danger ms-1">*</span>
                                     </label>
                                     {errors.username && (
                                         <span className="text-danger small ms-2">
@@ -104,6 +105,7 @@ const Login = () => {
                                         htmlFor="password"
                                     >
                                         密碼
+                                        <span className="text-danger ms-1">*</span>
                                     </label>
                                     {errors.password && (
                                         <span className="text-danger small ms-2">
