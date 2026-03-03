@@ -7,7 +7,9 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState({ carts: [], total: 0, final_total: 0 });
     const [isLoading, setIsLoading] = useState(false);
     const [isFirstRender, setIsFirstRender] = useState(true);
-    const [updatingItems, setUpdatingItems] = useState(new Set());
+    const [updatingItems, setUpdatingItems] = useState(new Set()); // 更新數量中
+    const [deletingItems, setDeletingItems] = useState(new Set()); // 刪除中
+    const [isDeletingAll, setIsDeletingAll] = useState(false);
     const { showError } = useMessage();
 
     // 取得購物車資料
@@ -18,7 +20,7 @@ export const CartProvider = ({ children }) => {
                 const res = await getCartApi();
                 setCart(res?.data?.data || { carts: [], total: 0, final_total: 0 });
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '取得購物車資料失敗');
             } finally {
                 if (showLoading) {
                     setTimeout(() => {
@@ -41,7 +43,7 @@ export const CartProvider = ({ children }) => {
                 getCart(true);
                 return res;
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '加入購物車失敗');
                 setIsLoading(false);
             }
         },
@@ -72,7 +74,7 @@ export const CartProvider = ({ children }) => {
                 await updateCartApi(cartId, { product_id, qty: numQty });
                 await getCart(false);
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '更新商品數量失敗');
             } finally {
                 // 移除更新中標記
                 setUpdatingItems((prev) => {
@@ -89,10 +91,20 @@ export const CartProvider = ({ children }) => {
     const deleteCart = useCallback(
         async (cartId) => {
             try {
+                // 標記為刪除中
+                setDeletingItems((prev) => new Set(prev).add(cartId));
+
                 await deleteCartApi(cartId);
                 await getCart(false);
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '刪除商品失敗');
+            } finally {
+                // 移除刪除中標記
+                setDeletingItems((prev) => {
+                    const next = new Set(prev);
+                    next.delete(cartId);
+                    return next;
+                });
             }
         },
         [getCart, showError]
@@ -100,11 +112,14 @@ export const CartProvider = ({ children }) => {
 
     // 刪除所有品項
     const deleteCartAll = useCallback(async () => {
+        setIsDeletingAll(true);
         try {
             await deleteCartAllApi();
             await getCart(false);
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '刪除所有商品失敗');
+        } finally {
+            setIsDeletingAll(false);
         }
     }, [getCart, showError]);
 
@@ -119,10 +134,12 @@ export const CartProvider = ({ children }) => {
             isLoading,
             isFirstRender,
             updatingItems,
+            deletingItems,
             addToCart,
             updateCart,
             deleteCart,
             deleteCartAll,
+            isDeletingAll,
             getCart,
         }),
         [
@@ -130,10 +147,12 @@ export const CartProvider = ({ children }) => {
             isLoading,
             isFirstRender,
             updatingItems,
+            deletingItems,
             addToCart,
             updateCart,
             deleteCart,
             deleteCartAll,
+            isDeletingAll,
             getCart,
         ]
     );

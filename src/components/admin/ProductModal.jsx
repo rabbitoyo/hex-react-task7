@@ -157,19 +157,19 @@ const ProductModal = ({ getProducts, templateProduct, modalRef, modalType, close
             let res;
             if (modalType === 'add') {
                 res = await addProductApi(productData);
-                showSuccess(res.data.message);
+                showSuccess(res?.data?.message || '新增產品成功');
 
                 await getProducts();
                 closeModal();
             } else {
                 res = await updateProductApi(templateData.id, productData);
-                showSuccess(res.data.message);
+                showSuccess(res?.data?.message || '更新產品成功');
 
                 await getProducts();
                 closeModal();
             }
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '操作失敗');
         }
     };
 
@@ -177,12 +177,12 @@ const ProductModal = ({ getProducts, templateProduct, modalRef, modalType, close
     const deleteProduct = async (id) => {
         try {
             const res = await deleteProductApi(id);
-            showSuccess(res.data.message);
+            showSuccess(res?.data?.message || '刪除產品成功');
 
             await getProducts();
             closeModal();
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '刪除產品失敗');
         }
     };
 
@@ -215,7 +215,7 @@ const ProductModal = ({ getProducts, templateProduct, modalRef, modalType, close
             setSelectedFileName('未選擇檔案。');
             showSuccess('圖片上傳成功');
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '圖片上傳失敗');
         }
     };
 

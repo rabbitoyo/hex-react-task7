@@ -42,7 +42,7 @@ const Products = () => {
 
             setProducts(allProducts);
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '取得商品列表失敗');
         } finally {
             setTimeout(() => {
                 setIsLoading(false);

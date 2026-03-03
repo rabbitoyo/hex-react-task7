@@ -28,7 +28,7 @@ const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoadin
 
             navigate('/');
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '登出失敗');
         } finally {
             // 清除 token
             removeToken();
@@ -49,13 +49,13 @@ const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoadin
                 },
             };
             const res = await updateProductApi(id, data);
-            showSuccess(res.data.message);
+            showSuccess(res?.data?.message || '更新產品狀態成功');
 
             setProducts((prev) =>
                 prev.map((item) => (item.id === id ? { ...item, is_enabled: data.data.is_enabled } : item))
             );
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '更新產品狀態失敗');
         }
     };
 

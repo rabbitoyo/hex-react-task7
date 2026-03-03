@@ -57,7 +57,7 @@ const AdminLayout = () => {
                 setProducts(res.data.products);
                 setPagination(res.data.pagination);
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '取得產品列表失敗');
             }
         },
         [showError]
@@ -83,7 +83,7 @@ const AdminLayout = () => {
 
                 await getProducts();
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '取得產品列表失敗');
             } finally {
                 setIsLoading(false);
                 setIsCheckingAuth(false);

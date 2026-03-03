@@ -40,7 +40,7 @@ const Home = () => {
 
                 setProducts(sortedProducts);
             } catch (error) {
-                showError(error.response.data.message);
+                showError(error?.response?.data?.message || '取得商品列表失敗');
             }
         };
         getProducts();

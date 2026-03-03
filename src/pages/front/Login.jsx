@@ -34,10 +34,10 @@ const Login = () => {
             const { token, expired } = res.data;
             setToken(token, expired);
 
-            showSuccess(res.data.message);
+            showSuccess(res?.data?.message || '登入成功');
             navigate('/admin');
         } catch (error) {
-            showError(error.response.data.message);
+            showError(error?.response?.data?.message || '登入失敗');
         }
     };
 
