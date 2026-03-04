@@ -15,6 +15,7 @@ import Login from '../pages/front/Login';
 import AdminLayout from '../layouts/AdminLayout';
 import Dashboard from '../pages/admin/Dashboard';
 import NotFound from '../pages/front/NotFound';
+import CheckLoginRoute from '../components/admin/CheckLoginRoute';
 
 const router = createHashRouter([
     {
@@ -36,7 +37,11 @@ const router = createHashRouter([
     },
     {
         path: '/admin',
-        element: <AdminLayout />,
+        element: (
+            <CheckLoginRoute>
+                <AdminLayout />
+            </CheckLoginRoute>
+        ),
         children: [{ index: true, element: <Dashboard /> }],
     },
     {

@@ -35,7 +35,11 @@ const Login = () => {
             setToken(token, expired);
 
             showSuccess(res?.data?.message || '登入成功');
-            navigate('/admin');
+
+            // 延遲導航，確保 Cookie 已設置完成
+            setTimeout(() => {
+                navigate('/admin', { replace: true });
+            }, 150);
         } catch (error) {
             showError(error?.response?.data?.message || '登入失敗');
         }

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { ThreeDots } from 'react-loader-spinner';
 import useMessage from '../../hooks/useMessage';
 
 // Components
@@ -13,34 +15,44 @@ import { logoutApi } from '../../api/auth';
 import { updateProductApi } from '../../api/admin';
 
 // Dashboard 元件
-const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoading, openModal }) => {
+const Dashboard = ({ products, setProducts, getProducts, pagination, openModal }) => {
     const navigate = useNavigate();
     const { showSuccess, showError } = useMessage();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [updatingStatusItems, setUpdatingStatusItems] = useState(new Set()); // 追蹤正在更新狀態的產品
 
     // 登出
     const handleLogout = async () => {
+        setIsLoggingOut(true);
         try {
-            setIsLoading(true);
-
             await logoutApi();
-
             showSuccess('已成功登出！');
-
-            navigate('/');
         } catch (error) {
             showError(error?.response?.data?.message || '登出失敗');
+            setIsLoggingOut(false);
         } finally {
-            // 清除 token
+            // 清除 token 和狀態
             removeToken();
             setProducts([]);
-            setIsLoading(false);
-            navigate('/');
+
+            // 延遲導航，確保 Cookie 完全清除
+            setTimeout(() => {
+                navigate('/', { replace: true });
+            }, 50);
         }
     };
 
-    // 更新產品狀態
+    // 更新產品狀態（加入防連點機制）
     const updateProductStatus = async (id) => {
+        // 防止重複請求：如果該產品正在更新中，忽略新請求
+        if (updatingStatusItems.has(id)) {
+            return;
+        }
+
         try {
+            // 標記為更新中
+            setUpdatingStatusItems((prev) => new Set(prev).add(id));
+
             const target = products.find((product) => product.id === id);
             const data = {
                 data: {
@@ -56,6 +68,13 @@ const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoadin
             );
         } catch (error) {
             showError(error?.response?.data?.message || '更新產品狀態失敗');
+        } finally {
+            // 移除更新中標記
+            setUpdatingStatusItems((prev) => {
+                const next = new Set(prev);
+                next.delete(id);
+                return next;
+            });
         }
     };
 
@@ -69,8 +88,20 @@ const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoadin
                             <li className="breadcrumb-item">後台</li>
                             <li className="breadcrumb-item active">旅程管理</li>
                         </ol>
-                        <button type="button" className="btn btn-outline-danger" onClick={handleLogout}>
-                            登出
+                        <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
+                        >
+                            {isLoggingOut ? (
+                                <div className="d-flex justify-content-center align-items-center gap-2">
+                                    <span className="fs-11">登出中</span>
+                                    <ThreeDots color="currentColor" width="20" height="10" />
+                                </div>
+                            ) : (
+                                '登出'
+                            )}
                         </button>
                     </div>
                 </nav>
@@ -126,6 +157,7 @@ const Dashboard = ({ products, setProducts, getProducts, pagination, setIsLoadin
                                                         type="checkbox"
                                                         checked={product.is_enabled === 1}
                                                         onChange={() => updateProductStatus(product.id)}
+                                                        disabled={updatingStatusItems.has(product.id)}
                                                     />
                                                 </div>
                                             </td>

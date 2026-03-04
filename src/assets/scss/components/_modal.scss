@@ -1,4 +1,9 @@
 .modal {
+    .modal-header {
+        .btn-close {
+            opacity: 1;
+        }
+    }
     .form-control {
         &::placeholder {
             color: $secondary;
